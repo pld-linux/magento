@@ -1,0 +1,12 @@
+diff -ru magento/app/code/core/Mage/Dataflow/Model/Convert/Adapter/Abstract.php /var/www/shop.mambasoft.it/app/code/core/Mage/Dataflow/Model/Convert/Adapter/Abstract.php
+--- magento/app/code/core/Mage/Dataflow/Model/Convert/Adapter/Abstract.php	2009-06-01 15:17:05.000000000 +0200
++++ /var/www/shop.mambasoft.it/app/code/core/Mage/Dataflow/Model/Convert/Adapter/Abstract.php	2009-09-20 16:19:09.000000000 +0200
+@@ -84,7 +84,7 @@
+         if ($separator != '.') {
+             $number = str_replace($separator, '.', $number);
+         }
+-
++	setlocale(LC_ALL,'en_US');
+         return floatval($number);
+     }
+ }

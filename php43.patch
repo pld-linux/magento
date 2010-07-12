@@ -1,0 +1,29 @@
+diff -Nru magento.orig/app/code/core/Mage/Core/Controller/Request/Http.php magento/app/code/core/Mage/Core/Controller/Request/Http.php
+--- magento.orig/app/code/core/Mage/Core/Controller/Request/Http.php	2009-07-23 07:28:42.000000000 +0200
++++ magento/app/code/core/Mage/Core/Controller/Request/Http.php	2009-07-24 16:15:35.000000000 +0200
+@@ -271,7 +271,7 @@
+             return false;
+         }
+         if ($trimPort) {
+-            $host = split(':', $_SERVER['HTTP_HOST']);
++            $host = explode(':', $_SERVER['HTTP_HOST']);
+             return $host[0];
+         }
+         return $_SERVER['HTTP_HOST'];
+diff -Nru magento.orig/lib/Varien/Object.php magento/lib/Varien/Object.php
+--- magento.orig/lib/Varien/Object.php	2009-07-23 07:30:51.000000000 +0200
++++ magento/lib/Varien/Object.php	2009-07-24 16:16:04.000000000 +0200
+@@ -481,10 +481,10 @@
+      * @param  string $valueSeparator
+      * @return string
+      */
+-    public function __toString(array $arrAttributes = array(), $valueSeparator=',')
++    public function __toString()
+     {
+-        $arrData = $this->toArray($arrAttributes);
+-        return implode($valueSeparator, $arrData);
++        $arrData = $this->toArray();
++        return implode(',', $arrData);
+     }
+ 
+     /**

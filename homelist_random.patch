@@ -1,0 +1,52 @@
+diff -Nru magento.orig/app/code/core/Mage/Catalog/Block/Product/List/Random.php magento/app/code/core/Mage/Catalog/Block/Product/List/Random.php
+--- magento.orig/app/code/core/Mage/Catalog/Block/Product/List/Random.php	2009-09-23 20:52:08.000000000 +0200
++++ magento/app/code/core/Mage/Catalog/Block/Product/List/Random.php	2009-09-24 12:53:33.000000000 +0200
+@@ -43,7 +43,7 @@
+             $collection->addStoreFilter();
+             $numProducts = $this->getNumProducts() ? $this->getNumProducts() : 3;
+             $collection->setPage(1, $numProducts);
+-
++            foreach ($collection as $_p);
+             $this->_productCollection = $collection;
+         }
+         return $this->_productCollection;
+diff -Nru magento.orig/app/design/frontend/default/default/template/catalog/product/homelist.phtml magento/app/design/frontend/default/default/template/catalog/product/homelist.phtml
+--- magento.orig/app/design/frontend/default/default/template/catalog/product/homelist.phtml	1970-01-01 01:00:00.000000000 +0100
++++ magento/app/design/frontend/default/default/template/catalog/product/homelist.phtml	2009-09-24 12:54:02.000000000 +0200
+@@ -0,0 +1,36 @@
++<?php $_productCollection=$this->getLoadedProductCollection() ?>
++<?php if(!$_productCollection->count()): ?>
++<div class="note-msg">
++    <?php echo $this->__('There are no products matching the selection.') ?>
++</div>
++<?php else: ?>
++<div class="box best-selling">
++<?php $_collectionSize = $_productCollection->count() ?>
++<table border="0" cellspacing="0">
++<tbody>
++    <?php $i=0; foreach ($_productCollection as $_product): ?>
++        <?php if($i++%2==0): ?>
++        <tr>
++        <?php endif; ?>
++            <td>
++                <a href="<?php echo $_product->getProductUrl() ?>" >
++                <img class="product-img" src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(95, 95); ?>" width="95" height="95" alt="<?php echo $this->htmlEscape($_product->getName()) ?>" />
++                </a>
++                <div class="product-description">
++                <p><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></p>
++                <?php echo $this->getPriceHtml($_product, true) ?>
++                <?php if($_product->getRatingSummary()): ?>
++                    <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
++                <?php endif; ?>
++                <?php echo nl2br($_product->getShortDescription()) ?>
++                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><small><?php echo $this->__('Learn More') ?></small></a>
++            </td>
++        <?php if($i%2==0 || $i==$_collectionSize): ?>
++        </tr>
++        <?php endif; ?>
++    <?php endforeach ?>
++    <script type="text/javascript">decorateGeneric($$('tr'), ['last', 'odd', 'even']);</script>
++</tbody>
++</table>
++</div>
++<?php endif; //$_productCollection->count() ?>

@@ -1,0 +1,12 @@
+diff -ru magento/app/code/core/Mage/Adminhtml/Block/Catalog/Category/Tree.php /var/www/shop.mambasoft.it/app/code/core/Mage/Adminhtml/Block/Catalog/Category/Tree.php
+--- magento/app/code/core/Mage/Adminhtml/Block/Catalog/Category/Tree.php	2009-06-01 15:18:04.000000000 +0200
++++ /var/www/shop.mambasoft.it/app/code/core/Mage/Adminhtml/Block/Catalog/Category/Tree.php	2009-08-24 16:54:21.000000000 +0200
+@@ -277,7 +277,7 @@
+      */
+     public function buildNodeName($node)
+     {
+-        $result = $this->htmlEscape($node->getName());
++        $result = '[ID: '. $node->getId() . ' ] '.$this->htmlEscape($node->getName());
+         if ($this->_withProductCount) {
+              $result .= ' (' . $node->getProductCount() . ')';
+         }
