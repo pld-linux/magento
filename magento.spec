@@ -7,6 +7,7 @@ Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
 Source0:	http://www.magentocommerce.com/downloads/assets/%{version}/%{name}-%{version}.tar.bz2
 # Source0-md5:	74bba43bf8f5429fb26797be3fefbf0f
+Source1:	apache.conf
 Source2:	%{name}-crontab
 Source3:	%{name}-cron_disabled.php
 Source4:	%{name}-cron_import.php
@@ -35,24 +36,14 @@ An open-source eCommerce platform focused on flexibility and control.
 %patch3 -p1
 rm -rf app/.svn
 
-cat <<'EOF' > apache.conf
-Alias /magento %{_appdir}/magento
-<Directory %{_appdir}/magento>
-    AllowOverride All
-    RewriteEngine On
-    Order allow,deny
-    Allow from All
-</Directory>
-EOF
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_appdir}
 cp -a . $RPM_BUILD_ROOT%{_appdir}
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
-cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
-cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
+cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
 
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_appdir}/crontab
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_appdir}/cron_disabled.php
