@@ -4,13 +4,13 @@
 %define		php_min_version 5.2.0
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
-Version:	1.4.0.0
+Version:	1.4.1.0
 Release:	0.3
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
 Source0:	http://www.magentocommerce.com/downloads/assets/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	74bba43bf8f5429fb26797be3fefbf0f
+# Source0-md5:	e497d08f95cf0b788dbc7c8e8b574034
 Source1:	apache.conf
 Source2:	%{name}-crontab
 Source3:	%{name}-cron_disabled.php
@@ -40,13 +40,21 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 An open-source eCommerce platform focused on flexibility and control.
 
 %prep
-%setup -q -n %{name}
+%setup -qc
+mv %{name}/{.??*,*} . && rmdir %{name}
 %undos -f php
 #%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-rm -rf app/.svn
+
+# cleanup backups after patching
+find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
+
+# make docs to pack
+install -d docs
+mv RELEASE_NOTES.txt doc
+mv .htaccess.sample doc/htaccess.sample
 
 # contents included in apache.conf
 find -name .htaccess | xargs rm
@@ -55,6 +63,7 @@ find -name .htaccess | xargs rm
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_appdir}
 cp -a . $RPM_BUILD_ROOT%{_appdir}
+rm -rf $RPM_BUILD_ROOT%{_appdir}/doc
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
@@ -82,6 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc doc/*
 %dir %attr(750,root,http) %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
