@@ -1,0 +1,11 @@
+--- magento-1.4.1.0/app/code/core/Mage/Install/Model/Installer/Config.php~	2010-07-21 17:18:49.000000000 +0300
++++ magento-1.4.1.0/app/code/core/Mage/Install/Model/Installer/Config.php	2010-07-21 17:49:43.147713541 +0300
+@@ -117,7 +117,7 @@
+         $data = Mage::getModel('varien/object')
+             ->setDbHost('localhost')
+             ->setDbName('magento')
+-            ->setDbUser('root')
++            ->setDbUser('mysql')
+             ->setDbPass('')
+             ->setSecureBaseUrl($baseSecureUrl)
+             ->setUnsecureBaseUrl($baseUrl)
