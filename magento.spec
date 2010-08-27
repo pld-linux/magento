@@ -5,7 +5,7 @@
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
 Version:	1.4.1.0
-Release:	0.3
+Release:	0.6
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
@@ -20,13 +20,27 @@ Patch0:		%{name}-1.3.2.3-php43.patch
 Patch1:		%{name}-1.3.2.1-categories_id.patch
 Patch2:		%{name}-1.3.2.1-cron_export_fix_lang.patch
 Patch3:		%{name}-1.3.2.4-homelist_random.patch
+Patch4:		pld-mysql-root.patch
+Patch5:		amcustomerattr-optional.patch
 BuildRequires:	rpmbuild(macros) >= 1.553
 Requires:	php-common >= 4:%{php_min_version}
+Requires:	php-ctype
+Requires:	php-curl
 Requires:	php-dom
+Requires:	php-gd
+Requires:	php-hash
+Requires:	php-iconv
 Requires:	php-mcrypt
+Requires:	php-mhash
 Requires:	php-mhash
 Requires:	php-pdo-mysql
 Requires:	php-simplexml
+Requires:	webapps
+Requires:	webserver(access)
+Requires:	webserver(alias)
+Requires:	webserver(indexfile)
+Requires:	webserver(php)
+Requires:	webserver(rewrite)
 Suggests:	php-pecl-APC
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -39,22 +53,45 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 An open-source eCommerce platform focused on flexibility and control.
 
+%package setup
+Summary:	Magento setup package
+Summary(pl.UTF-8):	Pakiet do wstępnej konfiguracji Magento
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+
+%description setup
+Install this package to configure initial Magento installation. You
+should uninstall this package when you're done, as it considered
+insecure to keep the setup files in place.
+
+%description setup -l pl.UTF-8
+Ten pakiet należy zainstalować w celu wstępnej konfiguracji Magento po
+pierwszej instalacji. Potem należy go odinstalować, jako że
+pozostawienie plików instalacyjnych mogłoby być niebezpieczne.
+
 %prep
 %setup -qc
 mv %{name}/{.??*,*} . && rmdir %{name}
-%undos -f php
+%undos -f php,phtml
 #%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 # cleanup backups after patching
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
 # make docs to pack
-install -d docs
+install -d doc
 mv RELEASE_NOTES.txt doc
+mv LICENSE*.txt doc
+mv *sample doc
 mv .htaccess.sample doc/htaccess.sample
+
+# use system Zend
+#rm -rf lib/Zend
 
 # contents included in apache.conf
 find -name .htaccess | xargs rm
@@ -102,8 +139,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/app/code/*
 %dir %{_appdir}/app/design
 %{_appdir}/app/design/*
-%dir %{_appdir}/app/etc
-%attr(775,root,http) %config(noreplace) %{_appdir}/app/etc/*
+%dir %attr(775,root,http) %{_appdir}/app/etc
+%dir %attr(775,root,http) %{_appdir}/app/etc/modules
+%attr(664,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/app/etc/*.xml
+%attr(664,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/app/etc/local.xml*
+%attr(664,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/app/etc/modules/*.xml
 %dir %{_appdir}/app/locale
 %{_appdir}/app/locale/*
 %{_appdir}/app/Mage.php
@@ -111,7 +151,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/downloader/*
 %dir %{_appdir}/includes
 %{_appdir}/includes/config.php
-%{_appdir}/index.php.sample
 %dir %{_appdir}/pkginfo
 %{_appdir}/pkginfo/*
 #%dir %{_appdir}/report
@@ -124,7 +163,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/js/*
 %dir %{_appdir}/install.php
 %dir %{_appdir}/lib
-%{_appdir}/lib/*
+%{_appdir}/lib/3Dsecure
+%{_appdir}/lib/flex
+%{_appdir}/lib/googlecheckout
+%{_appdir}/lib/LinLibertineFont
+%{_appdir}/lib/PEAR
+%{_appdir}/lib/phpseclib
+%{_appdir}/lib/Varien
+%{_appdir}/lib/Zend
 %attr(775,root,http) %dir %{_appdir}/media
 %attr(775,root,http) %dir %{_appdir}/var
 %{_appdir}/favicon.ico
@@ -135,9 +181,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/cron_import.php
 %{_appdir}/cron_export.php
 %{_appdir}/index.php
-%{_appdir}/LICENSE.txt
-%{_appdir}/LICENSE.html
-%{_appdir}/LICENSE_AFL.txt
 #%{_appdir}/STATUS.txt
 %{_appdir}/pear
-%{_appdir}/php.ini.sample
+
+%files setup
+%defattr(644,root,root,755)
+%{_appdir}/LICENSE.html
