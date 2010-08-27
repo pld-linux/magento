@@ -5,7 +5,7 @@
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
 Version:	1.4.1.0
-Release:	0.6
+Release:	0.7
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
@@ -83,6 +83,9 @@ mv %{name}/{.??*,*} . && rmdir %{name}
 # cleanup backups after patching
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
+# default config
+cp app/etc/local.xml{.template,}
+
 # make docs to pack
 install -d doc
 mv RELEASE_NOTES.txt doc
@@ -141,7 +144,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/app/design/*
 %dir %attr(775,root,http) %{_appdir}/app/etc
 %dir %attr(775,root,http) %{_appdir}/app/etc/modules
-%attr(664,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/app/etc/*.xml
+%attr(664,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/app/etc/config.xml
 %attr(664,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/app/etc/local.xml*
 %attr(664,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/app/etc/modules/*.xml
 %dir %{_appdir}/app/locale
