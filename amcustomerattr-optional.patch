@@ -1,0 +1,21 @@
+--- magento/app/design/frontend/base/default/template/checkout/onepage/billing.phtml	2010-06-14 10:21:21.000000000 +0300
++++ magento-dev-2/app/design/frontend/base/default/template/checkout/onepage/billing.phtml	2010-08-27 12:13:44.000000000 +0300
+@@ -144,7 +144,7 @@
+                     <?php echo $_taxvat->setTaxvat($this->getQuote()->getCustomerTaxvat())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                 </li>
+         <?php endif ?>
+-
++	<?php if($amcustomerattr = Mage::helper('amcustomerattr')){ echo $amcustomerattr->fields(); } ?>
+                 <li class="fields" id="register-customer-password">
+                     <div class="field">
+                         <label for="billing:customer_password" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+--- magento/app/design/frontend/base/default/template/customer/form/edit.phtml	2010-06-14 10:21:22.000000000 +0300
++++ magento-dev-2/app/design/frontend/base/default/template/customer/form/edit.phtml	2010-08-27 12:15:11.000000000 +0300
+@@ -84,6 +84,7 @@
+             </li>
+         </ul>
+     </div>
++    <?php if($amcustomerattr = Mage::helper('amcustomerattr')){ echo $amcustomerattr->fields(); } ?>
+     <div class="buttons-set">
+         <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+         <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
