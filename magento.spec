@@ -4,13 +4,13 @@
 %define		php_min_version 5.2.0
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
-Version:	1.4.1.0
-Release:	0.7
+Version:	1.4.1.1
+Release:	0.2
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
 Source0:	http://www.magentocommerce.com/downloads/assets/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	e497d08f95cf0b788dbc7c8e8b574034
+# Source0-md5:	319882ad9eaef8b7312071ba48a8045a
 Source1:	apache.conf
 Source2:	%{name}-crontab
 Source3:	%{name}-cron_disabled.php
@@ -72,6 +72,10 @@ pozostawienie plików instalacyjnych mogłoby być niebezpieczne.
 %prep
 %setup -qc
 mv %{name}/{.??*,*} . && rmdir %{name}
+
+# use system Zend, magento has bundled ZF somewhere between versions 1.9.6 and 1.9.7
+rm -rf lib/Zend
+
 %undos -f php,phtml
 #%patch0 -p1
 %patch1 -p1
@@ -92,9 +96,6 @@ mv RELEASE_NOTES.txt doc
 mv LICENSE*.txt doc
 mv *sample doc
 mv .htaccess.sample doc/htaccess.sample
-
-# use system Zend
-#rm -rf lib/Zend
 
 # contents included in apache.conf
 find -name .htaccess | xargs rm
@@ -173,7 +174,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/lib/PEAR
 %{_appdir}/lib/phpseclib
 %{_appdir}/lib/Varien
-%{_appdir}/lib/Zend
+#%{_appdir}/lib/Zend
 %attr(775,root,http) %dir %{_appdir}/media
 %attr(775,root,http) %dir %{_appdir}/var
 %{_appdir}/favicon.ico
