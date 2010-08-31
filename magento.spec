@@ -22,6 +22,7 @@ Patch2:		%{name}-1.3.2.1-cron_export_fix_lang.patch
 Patch3:		%{name}-1.3.2.4-homelist_random.patch
 Patch4:		pld-mysql-root.patch
 Patch5:		amcustomerattr-optional.patch
+Patch6:		local.xml-empty.patch
 BuildRequires:	rpmbuild(macros) >= 1.553
 Requires:	php-common >= 4:%{php_min_version}
 Requires:	php-ctype
@@ -83,12 +84,13 @@ rm -rf lib/Zend
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 # cleanup backups after patching
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
-# default config
-cp app/etc/local.xml{.template,}
+# include default config in package files (empty so it can be treated as missing)
+> app/etc/local.xml
 
 # make docs to pack
 install -d doc
