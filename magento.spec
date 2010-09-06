@@ -1,11 +1,11 @@
 # TODO
 # - writable dirs: Ensure that the directories app/etc, var, and media are writable by the web server
-#include	/usr/lib/rpm/macros.php
+%include	/usr/lib/rpm/macros.php
 %define		php_min_version 5.2.0
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
 Version:	1.4.1.1
-Release:	0.2
+Release:	0.8
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
@@ -51,6 +51,18 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir	%{_webapps}/%{_webapp}
 %define		_appdir		%{_datadir}/%{_webapp}
 
+# lib/3Dsecure
+%define		libs_3dsecure	pear(XMLParser.php)
+%define		libs_mage		pear(3Dsecure/CentinelClient.php) pear(CentinelErrors.php) pear(CreateController.php) pear(ProfileController.php) pear(Rijndael.php) pear(Varien.*.php) pear(abstract.php) pear(Mage.*.php) pear(Maged/.*.php) pear(app/Mage.php) pear(google.*.php) pear(lib/Varien/.*.php) pear(phpseclib/Crypt/.*) pear(phpseclib/Math/.*) pear(phpseclib/Net/.*) pear(processor.php) pear(xml-processing/.*.php)
+%define		libs_pear		pear(Crypt/DES.php) pear(Crypt/Hash.php) pear(Crypt/Random.php) pear(Crypt/TripleDES.php) pear(Math/BigInteger.php) pear(Crypt/RSA.php)
+%define		_noautopear		%{libs_mage} %{libs_pear} %{libs_3dsecure}
+
+# exclude optional php dependencies
+%define		_noautophp	%{nil}
+
+# put it together for rpmbuild
+%define		_noautoreq	%{?_noautophp} %{?_noautopear}
+
 %description
 An open-source eCommerce platform focused on flexibility and control.
 
@@ -75,7 +87,46 @@ pozostawienie plików instalacyjnych mogłoby być niebezpieczne.
 mv %{name}/{.??*,*} . && rmdir %{name}
 
 # use system Zend, magento has bundled ZF somewhere between versions 1.9.6 and 1.9.7
-rm -rf lib/Zend
+rm -r lib/Zend
+
+# php-pear-PEAR 1.7.2
+rm lib/PEAR/PEAR.php
+rm -r lib/PEAR/PEAR
+
+# php-pear-HTTP 1.4.1
+rm lib/PEAR/HTTP/HTTP.php
+
+# php-pear-HTTP_Request 1.4.4
+rm lib/PEAR/HTTP/Request.php
+rm -r lib/PEAR/HTTP/Request
+
+# php-pear-Mail_Mime 1.5.2
+rm lib/PEAR/Mail/mime.php
+rm lib/PEAR/Mail/mimePart.php
+rm lib/PEAR/Mail/xmail.{dtd,xsl}
+
+# php-pear-Mail_mimeDecode 1.5.0
+rm lib/PEAR/Mail/mimeDecode.php
+
+# php-pear-Net_URL 1.0.15
+rm lib/PEAR/Net/URL.php
+
+# php-pear-Net_Socket 1.0.9
+rm lib/PEAR/Net/Socket.php
+
+# php-pear-SOAP-0.12.0-1.noarch
+rm -r lib/PEAR/SOAP
+
+# php-pear-XML_Parser 1.3.2
+rm lib/PEAR/XML/Parser.php
+rm lib/PEAR/XML/Parser/Simple.php
+rmdir lib/PEAR/XML/Parser
+
+# php-pear-XML_Serializer 0.19.2
+rm lib/PEAR/XML/Serializer.php
+rm lib/PEAR/XML/Unserializer.php
+
+rmdir lib/PEAR/{HTTP,Mail,Net}
 
 %undos -f php,phtml
 #%patch0 -p1
@@ -107,6 +158,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_appdir}
 cp -a . $RPM_BUILD_ROOT%{_appdir}
 rm -rf $RPM_BUILD_ROOT%{_appdir}/doc
+rm -f $RPM_BUILD_ROOT%{_appdir}/debug*.list
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
@@ -153,12 +205,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_appdir}/app/locale
 %{_appdir}/app/locale/*
 %{_appdir}/app/Mage.php
-%dir %{_appdir}/downloader
-%{_appdir}/downloader/*
 %dir %{_appdir}/includes
 %{_appdir}/includes/config.php
-%dir %{_appdir}/pkginfo
-%{_appdir}/pkginfo/*
 #%dir %{_appdir}/report
 #%{_appdir}/report/*
 %dir %{_appdir}/shell
@@ -167,7 +215,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/skin/*
 %dir %{_appdir}/js
 %{_appdir}/js/*
-%dir %{_appdir}/install.php
 %dir %{_appdir}/lib
 %{_appdir}/lib/3Dsecure
 %{_appdir}/lib/flex
@@ -188,8 +235,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/cron_export.php
 %{_appdir}/index.php
 #%{_appdir}/STATUS.txt
-%{_appdir}/pear
 
 %files setup
 %defattr(644,root,root,755)
 %{_appdir}/LICENSE.html
+%attr(755,root,root) %{_appdir}/pear
+%dir %{_appdir}/install.php
+%dir %{_appdir}/downloader
+%{_appdir}/downloader/*
+%dir %{_appdir}/pkginfo
+%{_appdir}/pkginfo/*
