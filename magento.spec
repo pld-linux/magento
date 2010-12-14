@@ -1,25 +1,29 @@
 # TODO
 # - writable dirs: Ensure that the directories app/etc, var, and media are writable by the web server
+#
+# Conditional build:
+%bcond_with	system_zf	# use system ZF, unfinished
+
 %include	/usr/lib/rpm/macros.php
 %define		php_min_version 5.2.0
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
 Version:	1.4.1.1
-Release:	0.10
+Release:	0.13
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
 Source0:	http://www.magentocommerce.com/downloads/assets/%{version}/%{name}-%{version}.tar.bz2
 # Source0-md5:	319882ad9eaef8b7312071ba48a8045a
 Source1:	apache.conf
-Source2:	%{name}-crontab
-Source3:	%{name}-cron_disabled.php
-Source4:	%{name}-cron_import.php
-Source5:	%{name}-cron_export.php
-Patch0:		%{name}-1.3.2.3-php43.patch
-Patch1:		%{name}-1.3.2.1-categories_id.patch
-Patch2:		%{name}-1.3.2.1-cron_export_fix_lang.patch
-Patch3:		%{name}-1.3.2.4-homelist_random.patch
+Source2:	crontab
+Source3:	cron_disabled.php
+Source4:	cron_import.php
+Source5:	cron_export.php
+Patch0:		php43.patch
+Patch1:		categories_id.patch
+Patch2:		cron_export_fix_lang.patch
+Patch3:		homelist_random.patch
 Patch4:		pld-mysql-root.patch
 Patch5:		amcustomerattr-optional.patch
 Patch6:		local.xml-empty.patch
@@ -95,7 +99,9 @@ Downloader for Magento.
 mv %{name}/{.??*,*} . && rmdir %{name}
 
 # use system Zend, magento has bundled ZF somewhere between versions 1.9.6 and 1.9.7
+%if %{with system_zf}
 rm -r lib/Zend
+%endif
 
 # php-pear-PEAR 1.7.2
 rm lib/PEAR/PEAR.php
@@ -231,7 +237,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/lib/PEAR
 %{_appdir}/lib/phpseclib
 %{_appdir}/lib/Varien
-#%{_appdir}/lib/Zend
+%if %{without system_zf}
+%{_appdir}/lib/Zend
+%endif
 %attr(775,root,http) %dir %{_appdir}/media
 %attr(775,root,http) %dir %{_appdir}/var
 %{_appdir}/favicon.ico
@@ -264,5 +272,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/app/design/install/default/default/template/install
 
 %files downloader
+%defattr(644,root,root,755)
 %dir %{_appdir}/downloader
 %{_appdir}/downloader/*
