@@ -5,7 +5,7 @@
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
 Version:	1.4.1.1
-Release:	0.8
+Release:	0.10
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 URL:		http://www.magentocommerce.com/
@@ -81,6 +81,14 @@ insecure to keep the setup files in place.
 Ten pakiet należy zainstalować w celu wstępnej konfiguracji Magento po
 pierwszej instalacji. Potem należy go odinstalować, jako że
 pozostawienie plików instalacyjnych mogłoby być niebezpieczne.
+
+%package downloader
+Summary:	Magento downloader
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+
+%description downloader
+Downloader for Magento.
 
 %prep
 %setup -qc
@@ -236,12 +244,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/index.php
 #%{_appdir}/STATUS.txt
 
+%exclude %{_appdir}/lib/Varien/Pear
+%exclude %{_appdir}/lib/Varien/Pear.php
+%exclude %{_appdir}/app/code/core/Mage/Install
+%exclude %{_appdir}/app/design/install/default/default/template/install
+
 %files setup
 %defattr(644,root,root,755)
 %{_appdir}/LICENSE.html
 %attr(755,root,root) %{_appdir}/pear
 %dir %{_appdir}/install.php
-%dir %{_appdir}/downloader
-%{_appdir}/downloader/*
 %dir %{_appdir}/pkginfo
 %{_appdir}/pkginfo/*
+
+%{_appdir}/lib/Varien/Pear
+%{_appdir}/lib/Varien/Pear.php
+
+%{_appdir}/app/code/core/Mage/Install
+%{_appdir}/app/design/install/default/default/template/install
+
+%files downloader
+%dir %{_appdir}/downloader
+%{_appdir}/downloader/*
