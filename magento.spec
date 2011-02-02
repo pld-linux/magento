@@ -27,6 +27,8 @@ Patch3:		homelist_random.patch
 Patch4:		pld-mysql-root.patch
 Patch5:		amcustomerattr-optional.patch
 Patch6:		local.xml-empty.patch
+BuildRequires:	rpm-php-pearprov
+BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.553
 Requires:	php-common >= 4:%{php_min_version}
 Requires:	php-ctype
