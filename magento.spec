@@ -12,7 +12,6 @@ Version:	1.4.1.1
 Release:	0.13
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
-URL:		http://www.magentocommerce.com/
 Source0:	http://www.magentocommerce.com/downloads/assets/%{version}/%{name}-%{version}.tar.bz2
 # Source0-md5:	319882ad9eaef8b7312071ba48a8045a
 Source1:	apache.conf
@@ -27,21 +26,22 @@ Patch3:		homelist_random.patch
 Patch4:		pld-mysql-root.patch
 Patch5:		amcustomerattr-optional.patch
 Patch6:		local.xml-empty.patch
+URL:		http://www.magentocommerce.com/
 BuildRequires:	rpm-php-pearprov
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.553
-Requires:	php-common >= 4:%{php_min_version}
-Requires:	php-ctype
-Requires:	php-curl
-Requires:	php-dom
-Requires:	php-gd
-Requires:	php-hash
-Requires:	php-iconv
-Requires:	php-mcrypt
+Requires:	php(core) >= %{php_min_version}
+Requires:	php(ctype)
+Requires:	php(curl)
+Requires:	php(dom)
+Requires:	php(gd)
+Requires:	php(hash)
+Requires:	php(iconv)
+Requires:	php(mcrypt)
+Requires:	php(pdo-mysql)
+Requires:	php(simplexml)
 Requires:	php-mhash
 Requires:	php-mhash
-Requires:	php-pdo-mysql
-Requires:	php-simplexml
 Requires:	webapps
 Requires:	webserver(access)
 Requires:	webserver(alias)
