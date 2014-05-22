@@ -4,12 +4,12 @@
 # Conditional build:
 %bcond_with	system_zf	# use system ZF, unfinished
 
-%include	/usr/lib/rpm/macros.php
 %define		php_min_version 5.2.0
+%include	/usr/lib/rpm/macros.php
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
 Version:	1.4.1.1
-Release:	0.13
+Release:	0.14
 License:	Open Software License (OSL 3.0)
 Group:		Applications/WWW
 Source0:	http://www.magentocommerce.com/downloads/assets/%{version}/%{name}-%{version}.tar.bz2
@@ -41,7 +41,6 @@ Requires:	php(mcrypt)
 Requires:	php(pdo-mysql)
 Requires:	php(simplexml)
 Requires:	php-mhash
-Requires:	php-mhash
 Requires:	webapps
 Requires:	webserver(access)
 Requires:	webserver(alias)
@@ -60,11 +59,15 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # lib/3Dsecure
 %define		libs_3dsecure	pear(XMLParser.php)
 %define		libs_mage		pear(3Dsecure/CentinelClient.php) pear(CentinelErrors.php) pear(CreateController.php) pear(ProfileController.php) pear(Rijndael.php) pear(Varien.*.php) pear(abstract.php) pear(Mage.*.php) pear(Maged/.*.php) pear(app/Mage.php) pear(google.*.php) pear(lib/Varien/.*.php) pear(phpseclib/Crypt/.*) pear(phpseclib/Math/.*) pear(phpseclib/Net/.*) pear(processor.php) pear(xml-processing/.*.php)
-%define		libs_pear		pear(Crypt/DES.php) pear(Crypt/Hash.php) pear(Crypt/Random.php) pear(Crypt/TripleDES.php) pear(Math/BigInteger.php) pear(Crypt/RSA.php)
-%define		_noautopear		%{libs_mage} %{libs_pear} %{libs_3dsecure}
+%define		libs_pear		pear(DES.php) pear(Crypt/DES.php) pear(Crypt/Hash.php) pear(Crypt/Random.php) pear(Crypt/TripleDES.php) pear(Math/BigInteger.php) pear(Crypt/RSA.php) pear(PEAR.*) pear(System.php) pear(HTML/Template/IT.php) pear(OS/Guess.php) pear(pearcmd.php)
+
+%if %{without system_zf}
+%define		libs_zf			pear(Zend/.*)
+%endif
+%define		_noautopear		%{libs_mage} %{libs_pear} %{libs_3dsecure} %{?libs_zf}
 
 # exclude optional php dependencies
-%define		_noautophp	%{nil}
+%define		_noautophp	php-sqlite
 
 # put it together for rpmbuild
 %define		_noautoreq	%{?_noautophp} %{?_noautopear}
