@@ -47,7 +47,7 @@ Requires:	webserver(alias)
 Requires:	webserver(indexfile)
 Requires:	webserver(php)
 Requires:	webserver(rewrite)
-Suggests:	php-pecl-APC
+Suggests:	php(apc)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
