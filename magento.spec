@@ -5,7 +5,6 @@
 %bcond_with	system_zf	# use system ZF, unfinished
 
 %define		php_min_version 5.2.0
-%include	/usr/lib/rpm/macros.php
 Summary:	An open-source eCommerce platform focused on flexibility and control
 Name:		magento
 Version:	1.4.1.1
