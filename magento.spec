@@ -147,7 +147,7 @@ rm lib/PEAR/XML/Unserializer.php
 rmdir lib/PEAR/{HTTP,Mail,Net}
 
 %undos -f php,phtml
-#%patch0 -p1
+#%%patch0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
 %patch -P3 -p1
